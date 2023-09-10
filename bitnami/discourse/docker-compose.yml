@@ -6,7 +6,8 @@ services:
   postgresql:
     image: docker.io/bitnami/postgresql:15
     volumes:
-      - 'postgresql_data:/bitnami/postgresql'
+      # - 'postgresql_data:/bitnami/postgresql'
+      - /path/to/postgresql-persistence:/bitnami/postgresql
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
@@ -18,20 +19,22 @@ services:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
-      - 'redis_data:/bitnami/redis'
+      # - 'redis_data:/bitnami/redis'
+      - /path/to/redis-persistence:/bitnami/redis
   discourse:
     image: docker.io/bitnami/discourse:3
     ports:
       - '80:3000'
     volumes:
-      - 'discourse_data:/bitnami/discourse'
+      # - 'discourse_data:/bitnami/discourse'
+      - /path/to/discourse-persistence:/bitnami/discourse
     depends_on:
       - postgresql
       - redis
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
-      - DISCOURSE_HOST=www.example.com
+      - DISCOURSE_HOST=www.funlovehk.com
       - DISCOURSE_DATABASE_HOST=postgresql
       - DISCOURSE_DATABASE_PORT_NUMBER=5432
       - DISCOURSE_DATABASE_USER=bn_discourse
@@ -46,24 +49,25 @@ services:
     depends_on:
       - discourse
     volumes:
-      - 'sidekiq_data:/bitnami/discourse'
+      # - 'sidekiq_data:/bitnami/discourse'
+      - /path/to/discourse-persistence:/bitnami/discourse
     command: /opt/bitnami/scripts/discourse-sidekiq/run.sh
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
-      - DISCOURSE_HOST=www.example.com
+      - DISCOURSE_HOST=www.funlovehk.com
       - DISCOURSE_DATABASE_HOST=postgresql
       - DISCOURSE_DATABASE_PORT_NUMBER=5432
       - DISCOURSE_DATABASE_USER=bn_discourse
       - DISCOURSE_DATABASE_NAME=bitnami_discourse
       - DISCOURSE_REDIS_HOST=redis
       - DISCOURSE_REDIS_PORT_NUMBER=6379
-volumes:
-  postgresql_data:
-    driver: local
-  redis_data:
-    driver: local
-  discourse_data:
-    driver: local
-  sidekiq_data:
-    driver: local
+# volumes:
+#   postgresql_data:
+#     driver: local
+#   redis_data:
+#     driver: local
+#   discourse_data:
+#     driver: local
+#   sidekiq_data:
+#     driver: local
